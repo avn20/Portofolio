@@ -1,86 +1,82 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Proyek | Portofolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-black px-4 py-8 text-white antialiased sm:px-5">
-    <main class="mx-auto max-w-6xl">
-        <header class="flex flex-col gap-5 border-b border-white/10 pb-6 md:flex-row md:items-end md:justify-between">
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.28em] text-white/45">Admin</p>
-                <h1 class="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">Kelola Proyek</h1>
-                <p class="mt-3 max-w-2xl text-sm leading-6 text-white/55">
-                    Halaman ini khusus admin untuk menambah, mengubah, dan menghapus proyek yang tampil di portofolio.
-                </p>
-            </div>
+@extends('layouts.admin')
 
-            <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                <a href="{{ route('home') }}" class="inline-flex justify-center rounded-md border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/40">
-                    Lihat Website
-                </a>
-                <a href="{{ route('admin.projects.create') }}" class="inline-flex justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-white/85">
-                    Tambah Proyek
-                </a>
-                <form action="{{ route('admin.logout') }}" method="POST">
-                    @csrf
-                    <button class="w-full rounded-md border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/40" type="submit">
-                        Keluar
-                    </button>
-                </form>
-            </div>
-        </header>
+@section('title', 'Kelola Proyek')
 
-        @if (session('success'))
-            <div class="mt-6 rounded-md border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-white/75">
-                {{ session('success') }}
-            </div>
-        @endif
+@section('content')
+<div>
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/10 pb-6">
+        <div>
+            <h2 class="text-2xl font-bold tracking-tight text-white">📁 Kelola Proyek Portfolio</h2>
+            <p class="mt-1 text-xs text-white/50">Tambah, perbarui screenshot, dan sesuaikan rincian teknis setiap proyek.</p>
+        </div>
+        <a href="{{ route('admin.projects.create') }}" class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-black transition hover:bg-white/85 shadow">
+            <span>+</span> Tambah Proyek Baru
+        </a>
+    </div>
 
-        <section class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            @forelse ($projects as $project)
-                @php
-                    $imageSource = filter_var($project->image, FILTER_VALIDATE_URL)
-                        ? $project->image
-                        : asset('storage/' . $project->image);
-                @endphp
-
-                <article class="overflow-hidden rounded-md border border-white/10 bg-white/[0.03]">
-                    <img src="{{ $imageSource }}" alt="{{ $project->title }}" class="h-48 w-full object-cover">
+    <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @forelse ($projects as $project)
+            <article class="flex flex-col justify-between overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition hover:border-white/30">
+                <div>
+                    <div class="relative h-48 w-full overflow-hidden bg-white/5">
+                        @if ($project->image_url)
+                            <img src="{{ $project->image_url }}" alt="{{ $project->title }}" class="h-full w-full object-cover">
+                        @else
+                            <div class="flex h-full w-full items-center justify-center bg-white/5 text-xs text-white/40">
+                                <span>Tanpa Gambar</span>
+                            </div>
+                        @endif
+                        <span class="absolute top-3 left-3 rounded-md bg-black/80 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
+                            {{ $project->category ?? 'Web Application' }}
+                        </span>
+                    </div>
 
                     <div class="p-5">
-                        <h2 class="break-words text-xl font-semibold">{{ $project->title }}</h2>
-                        <p class="mt-3 line-clamp-3 text-sm leading-6 text-white/55">{{ $project->description }}</p>
+                        <h3 class="text-lg font-bold text-white">{{ $project->title }}</h3>
+                        <p class="mt-1 text-xs font-medium text-emerald-400">Peran: {{ $project->role ?? 'Fullstack Developer' }}</p>
 
-                        @if ($project->link)
-                            <a href="{{ $project->link }}" target="_blank" rel="noopener" class="mt-4 inline-flex break-all text-sm font-semibold text-white/70 hover:text-white">
-                                Buka Link ↗
-                            </a>
+                        <p class="mt-3 line-clamp-3 text-xs leading-5 text-white/60">
+                            {{ $project->description }}
+                        </p>
+
+                        @if ($project->tech_stack)
+                            <div class="mt-4 flex flex-wrap gap-1">
+                                @foreach ($project->tech_list as $tech)
+                                    <span class="rounded bg-white/10 px-2 py-0.5 text-[10px] text-white/70">{{ $tech }}</span>
+                                @endforeach
+                            </div>
                         @endif
 
-                        <div class="mt-5 flex items-center gap-2 border-t border-white/10 pt-4">
-                            <a href="{{ route('admin.projects.edit', $project) }}" class="rounded-md bg-white px-3 py-2 text-xs font-semibold text-black transition hover:bg-white/85">
-                                Edit
-                            </a>
-                            <form action="{{ route('admin.projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus proyek ini?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="rounded-md border border-white/15 px-3 py-2 text-xs font-semibold text-white transition hover:border-white/40">
-                                    Hapus
-                                </button>
-                            </form>
+                        <div class="mt-4 flex items-center gap-3 text-xs">
+                            @if ($project->demo_url || $project->link)
+                                <a href="{{ $project->demo_url ?? $project->link }}" target="_blank" rel="noopener" class="text-sky-400 hover:underline">Demo ↗</a>
+                            @endif
+                            @if ($project->github_url)
+                                <a href="{{ $project->github_url }}" target="_blank" rel="noopener" class="text-white/60 hover:text-white">GitHub ↗</a>
+                            @endif
                         </div>
                     </div>
-                </article>
-            @empty
-                <div class="rounded-md border border-dashed border-white/20 bg-white/[0.03] p-8 text-center md:col-span-2 lg:col-span-3">
-                    <h2 class="text-xl font-semibold">Belum ada proyek</h2>
-                    <p class="mt-3 text-white/55">Tambahkan 3 proyek rencana kamu dari tombol di atas.</p>
                 </div>
-            @endforelse
-        </section>
-    </main>
-</body>
-</html>
+
+                <div class="flex items-center justify-end gap-2 border-t border-white/10 p-4 bg-white/[0.01]">
+                    <a href="{{ route('admin.projects.edit', $project) }}" class="rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-black transition hover:bg-white/85">
+                        Edit
+                    </a>
+                    <form action="{{ route('admin.projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus proyek ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-300 transition hover:bg-red-500/20">
+                            Hapus
+                        </button>
+                    </form>
+                </div>
+            </article>
+        @empty
+            <div class="col-span-full rounded-xl border border-dashed border-white/20 p-12 text-center">
+                <p class="text-base font-semibold text-white">Belum ada proyek terdaftar</p>
+                <p class="mt-1 text-xs text-white/50">Klik tombol "Tambah Proyek Baru" di atas untuk menambahkan portofolio Anda.</p>
+            </div>
+        @endforelse
+    </div>
+</div>
+@endsection

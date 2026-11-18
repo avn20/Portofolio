@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
+use App\Models\Certificate;
+use App\Models\Experience;
+use App\Models\Message;
+use App\Models\ProfileSetting;
 use App\Models\Project;
+use App\Models\Skill;
+use App\Models\Testimonial;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,8 +23,28 @@ class ProjectController extends Controller
     public function index(): View
     {
         $projects = Project::latest()->get();
+        $testimonials = Testimonial::approved()->latest()->get();
+        $certificates = Certificate::orderBy('order')->latest()->get();
+        $experiencesPlk = Experience::plk()->orderBy('order')->get();
+        $experiencesOrg = Experience::organisasi()->orderBy('order')->get();
+        $experiencesLomba = Experience::lomba()->orderBy('order')->get();
+        $hardSkills = Skill::hard()->orderBy('order')->get();
+        $softSkills = Skill::soft()->orderBy('order')->get();
+        $blogs = Blog::published()->orderBy('order')->latest()->take(6)->get();
+        $profile = ProfileSetting::allKeyed();
 
-        return view('welcome', compact('projects'));
+        return view('welcome', compact(
+            'projects',
+            'testimonials',
+            'certificates',
+            'experiencesPlk',
+            'experiencesOrg',
+            'experiencesLomba',
+            'hardSkills',
+            'softSkills',
+            'blogs',
+            'profile'
+        ));
     }
 
     public function login(): View
@@ -53,7 +80,7 @@ class ProjectController extends Controller
         $request->session()->regenerate();
         $request->session()->put('is_admin', true);
 
-        return redirect()->route('admin.projects.index');
+        return redirect()->route('admin.dashboard');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -65,13 +92,15 @@ class ProjectController extends Controller
 
     private function adminPasswordMatches(string $password): bool
     {
-        $passwordHash = env('ADMIN_PASSWORD_HASH');
+        $passwordHash = config('app.admin_password_hash') ?: env('ADMIN_PASSWORD_HASH');
 
         if ($passwordHash) {
             return Hash::check($password, $passwordHash);
         }
 
-        return hash_equals((string) env('ADMIN_PASSWORD', 'admin123'), $password);
+        $expectedPassword = (string) (config('app.admin_password') ?: env('ADMIN_PASSWORD') ?: 'admin123');
+
+        return hash_equals($expectedPassword, $password);
     }
 
     public function adminIndex(): View
@@ -90,12 +119,39 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'problem_statement' => ['nullable', 'string'],
+            'project_objective' => ['nullable', 'string'],
+            'tech_stack' => ['nullable', 'string', 'max:500'],
+            'role' => ['nullable', 'string', 'max:255'],
+            'features' => ['nullable', 'string'],
+            'demo_url' => ['nullable', 'url', 'max:255'],
+            'github_url' => ['nullable', 'url', 'max:255'],
+            'process_flow' => ['nullable', 'string'],
+            'user_feedback' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'link' => ['nullable', 'url', 'max:255'],
         ]);
 
-        $validated['image'] = $request->file('image')->store('projects', 'public');
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('projects', 'public');
+        } else {
+            $validated['image'] = null;
+        }
+
+        if (empty($validated['category'])) {
+            $validated['category'] = 'Web Application';
+        }
+        if (empty($validated['role'])) {
+            $validated['role'] = 'Fullstack Developer';
+        }
+        if (empty($validated['demo_url']) && !empty($validated['link'])) {
+            $validated['demo_url'] = $validated['link'];
+        }
+        if (empty($validated['link']) && !empty($validated['demo_url'])) {
+            $validated['link'] = $validated['demo_url'];
+        }
 
         Project::create($validated);
 
@@ -113,17 +169,40 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
             'description' => ['required', 'string'],
+            'problem_statement' => ['nullable', 'string'],
+            'project_objective' => ['nullable', 'string'],
+            'tech_stack' => ['nullable', 'string', 'max:500'],
+            'role' => ['nullable', 'string', 'max:255'],
+            'features' => ['nullable', 'string'],
+            'demo_url' => ['nullable', 'url', 'max:255'],
+            'github_url' => ['nullable', 'url', 'max:255'],
+            'process_flow' => ['nullable', 'string'],
+            'user_feedback' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'remove_image' => ['nullable', 'boolean'],
             'link' => ['nullable', 'url', 'max:255'],
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($project->image) {
+        if ($request->boolean('remove_image')) {
+            if ($project->image && !str_starts_with($project->image, 'assets/')) {
+                Storage::disk('public')->delete($project->image);
+            }
+            $validated['image'] = null;
+        } elseif ($request->hasFile('image')) {
+            if ($project->image && !str_starts_with($project->image, 'assets/')) {
                 Storage::disk('public')->delete($project->image);
             }
 
             $validated['image'] = $request->file('image')->store('projects', 'public');
+        }
+
+        if (empty($validated['demo_url']) && !empty($validated['link'])) {
+            $validated['demo_url'] = $validated['link'];
+        }
+        if (empty($validated['link']) && !empty($validated['demo_url'])) {
+            $validated['link'] = $validated['demo_url'];
         }
 
         $project->update($validated);
@@ -135,7 +214,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project): RedirectResponse
     {
-        if ($project->image) {
+        if ($project->image && !str_starts_with($project->image, 'assets/')) {
             Storage::disk('public')->delete($project->image);
         }
 

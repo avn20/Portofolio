@@ -66,7 +66,7 @@ class ExampleTest extends TestCase
             'password' => env('ADMIN_PASSWORD', 'admin123'),
         ]);
 
-        $response->assertRedirect(route('admin.projects.index'));
+        $response->assertRedirect(route('admin.dashboard'));
         $this->assertTrue(session('is_admin'));
     }
 

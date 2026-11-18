@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="800" height="500" fill="url(#bgGrad)" />
+
+  <!-- Grid Pattern Overlay -->
+  <g opacity="0.08" stroke="#ffffff" stroke-width="1">
+    <line x1="0" y1="50" x2="800" y2="50" />
+    <line x1="0" y1="100" x2="800" y2="100" />
+    <line x1="0" y1="150" x2="800" y2="150" />
+    <line x1="0" y1="200" x2="800" y2="200" />
+    <line x1="0" y1="250" x2="800" y2="250" />
+    <line x1="0" y1="300" x2="800" y2="300" />
+    <line x1="0" y1="350" x2="800" y2="350" />
+    <line x1="0" y1="400" x2="800" y2="400" />
+    <line x1="0" y1="450" x2="800" y2="450" />
+    <line x1="100" y1="0" x2="100" y2="500" />
+    <line x1="200" y1="0" x2="200" y2="500" />
+    <line x1="300" y1="0" x2="300" y2="500" />
+    <line x1="400" y1="0" x2="400" y2="500" />
+    <line x1="500" y1="0" x2="500" y2="500" />
+    <line x1="600" y1="0" x2="600" y2="500" />
+    <line x1="700" y1="0" x2="700" y2="500" />
+  </g>
+
+  <!-- Browser Window Mockup -->
+  <g filter="url(#shadow)" transform="translate(60, 40)">
+    <!-- Browser Frame -->
+    <rect width="680" height="420" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
+    
+    <!-- Top Bar -->
+    <rect width="680" height="38" rx="12" fill="#0f172a" />
+    <rect y="26" width="680" height="12" fill="#0f172a" />
+    
+    <!-- Window Controls -->
+    <circle cx="22" cy="19" r="5" fill="#ef4444" />
+    <circle cx="38" cy="19" r="5" fill="#f59e0b" />
+    <circle cx="54" cy="19" r="5" fill="#10b981" />
+    
+    <!-- URL Bar -->
+    <rect x="100" y="8" width="480" height="22" rx="6" fill="#1e293b" />
+    <text x="280" y="23" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="500">https://sekolah.sch.id</text>
+
+    <!-- Web Content Inside Browser -->
+    <g transform="translate(0, 38)">
+      <!-- Navbar -->
+      <rect width="680" height="42" fill="#0f172a" opacity="0.95" />
+      <circle cx="30" cy="21" r="10" fill="url(#accentGrad)" />
+      <text x="48" y="25" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">PORTAL SEKOLAH</text>
+      
+      <!-- Nav Menu items -->
+      <text x="420" y="25" fill="#e2e8f0" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Beranda</text>
+      <text x="480" y="25" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Profil</text>
+      <text x="530" y="25" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Jurusan</text>
+      <text x="590" y="25" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Kontak</text>
+
+      <!-- Hero Banner -->
+      <rect y="42" width="680" height="150" fill="#090d16" />
+      <rect x="25" y="65" width="160" height="18" rx="4" fill="url(#accentGrad)" opacity="0.2" />
+      <text x="32" y="78" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" font-weight="700">WEBSITE RESMI SEKOLAH</text>
+      
+      <text x="25" y="112" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800">Mencetak Generasi Unggul,</text>
+      <text x="25" y="136" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800">Kreatif, dan Berkarakter</text>
+      
+      <text x="25" y="158" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Pusat informasi akademik, pengumuman kegiatan siswa, dan pendaftaran peserta didik.</text>
+      
+      <rect x="25" y="168" width="90" height="20" rx="5" fill="url(#accentGrad)" />
+      <text x="40" y="182" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" font-weight="700">Lihat Profil</text>
+
+      <!-- Illustration Graphic on Right -->
+      <rect x="460" y="58" width="195" height="118" rx="8" fill="#1e293b" stroke="#334155" />
+      <rect x="475" y="75" width="165" height="12" rx="3" fill="#334155" />
+      <rect x="475" y="95" width="120" height="8" rx="3" fill="#334155" opacity="0.6" />
+      <rect x="475" y="110" width="140" height="8" rx="3" fill="#334155" opacity="0.6" />
+      <rect x="475" y="135" width="70" height="18" rx="4" fill="#059669" />
+
+      <!-- Content Cards Section below Hero -->
+      <rect y="192" width="680" height="190" fill="#0f172a" />
+      
+      <!-- Card 1 -->
+      <rect x="25" y="210" width="195" height="135" rx="8" fill="#1e293b" stroke="#334155" />
+      <circle cx="45" cy="230" r="10" fill="#38bdf8" opacity="0.2" />
+      <text x="62" y="234" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700">Kompetensi Keahlian</text>
+      <text x="35" y="258" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9">Program unggulan bidang teknologi informasi dan rekayasa perangkat lunak.</text>
+      <rect x="35" y="315" width="75" height="16" rx="3" fill="#334155" />
+      <text x="45" y="326" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="8" font-weight="600">Selengkapnya →</text>
+
+      <!-- Card 2 -->
+      <rect x="242" y="210" width="195" height="135" rx="8" fill="#1e293b" stroke="#334155" />
+      <circle cx="262" cy="230" r="10" fill="#10b981" opacity="0.2" />
+      <text x="279" y="234" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700">Berita & Agenda</text>
+      <text x="252" y="258" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9">Informasi kegiatan sekolah, pengumuman ujian, dan kalender pendidikan terkini.</text>
+      <rect x="252" y="315" width="75" height="16" rx="3" fill="#334155" />
+      <text x="262" y="326" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="8" font-weight="600">Selengkapnya →</text>
+
+      <!-- Card 3 -->
+      <rect x="460" y="210" width="195" height="135" rx="8" fill="#1e293b" stroke="#334155" />
+      <circle cx="480" cy="230" r="10" fill="#f59e0b" opacity="0.2" />
+      <text x="497" y="234" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700">Fasilitas Sekolah</text>
+      <text x="470" y="258" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9">Laboratorium komputer, ruang kelas modern, dan sarana olahraga penunjang belajar.</text>
+      <rect x="470" y="315" width="75" height="16" rx="3" fill="#334155" />
+      <text x="480" y="326" fill="#f59e0b" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="8" font-weight="600">Selengkapnya →</text>
+    </g>
+  </g>
+</svg>
